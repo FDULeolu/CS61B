@@ -5,7 +5,7 @@ public class Planet {
     public double xxVel;
     public double yyVel;
     public double mass;
-    String imgFileName;
+    public String imgFileName;
 
     /** The constructor of the Planet instance */
     public Planet(double xP, double yP, double xV,
@@ -18,8 +18,6 @@ public class Planet {
         imgFileName = img;
     }
 
-    /** The constructor of the Planet instance with no parameter */
-    public Planet(){}
 
     /** Another constructor that give a copy of input instance */
     public Planet(Planet p){
