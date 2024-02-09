@@ -65,5 +65,14 @@ public class NBody {
 
             time += dt;
         }
+
+        /** Print the final state of the universe */
+        StdOut.printf("%d\n", allPlanets.length);
+        StdOut.printf("%.2e\n", radius);
+        for (int i = 0; i < allPlanets.length; i++) {
+            StdOut.printf("%11.4e %11.4e %11.4e %11.4e %11.4e %12s\n",
+                    allPlanets[i].xxPos, allPlanets[i].yyPos, allPlanets[i].xxVel,
+                    allPlanets[i].yyVel, allPlanets[i].mass, allPlanets[i].imgFileName);
+        }
     }
 }
