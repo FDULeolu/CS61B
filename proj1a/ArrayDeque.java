@@ -65,7 +65,8 @@ public class ArrayDeque<T> {
     /** Check the length of array to keep the usage ratio is between 25% to 100%,
      * or the size of the deque is less than 16 */
     private void sizeChecker() {
-        if (size / items.length < 0.25 && size >= 16) {
+        double useRatio = (double) size / items.length;
+        if (useRatio < 0.25 && size >= 16) {
             shrink();
         } else if (size > items.length) {
             grow();
@@ -113,9 +114,10 @@ public class ArrayDeque<T> {
         if (size == 0) {
             return;
         }
-        for (int i = front; i <= last; i = addOne(i, items.length)) {
-            System.out.println(items[i]);
+        for (int i = front; i != last; i = addOne(i, items.length)) {
+            System.out.print(items[i] + " ");
         }
+        System.out.print(items[last]);
     }
 
     /** Removes and returns the item at the front of the deque.
