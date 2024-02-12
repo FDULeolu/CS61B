@@ -66,7 +66,7 @@ public class ArrayDeque<T> {
      * or the size of the deque is less than 16 */
     private void sizeChecker() {
         double useRatio = (double) size / items.length;
-        if (useRatio < 0.25 && size >= 16) {
+        if (useRatio < 0.25 && items.length >= 16) {
             shrink();
         } else if (size > items.length) {
             grow();
@@ -167,5 +167,9 @@ public class ArrayDeque<T> {
             ptr = addOne(ptr, items.length);
         }
         return items[ptr];
+    }
+
+    public int getLength() {
+        return items.length;
     }
 }
