@@ -32,6 +32,8 @@ public class TestPalindrome {
         CharacterComparator cc = new OffByOne();
         assertTrue(palindrome.isPalindrome("kftugl", cc));
         assertFalse(palindrome.isPalindrome("abcba", cc));
+        assertTrue(palindrome.isPalindrome("flake", cc));
+        assertFalse(palindrome.isPalindrome("aba", cc));
     }
 
 }
