@@ -1,10 +1,10 @@
 public class LinkedListDeque<T> {
 
     /** A Nested Classes for LinkedListDeque */
-    public class TNode {
-        public TNode prev;
-        public T item;
-        public TNode next;
+    private class TNode {
+        private TNode prev;
+        private T item;
+        private TNode next;
         public TNode(T t, TNode p, TNode n) {
             prev = p;
             item = t;
@@ -30,16 +30,18 @@ public class LinkedListDeque<T> {
 
     /** Adds an item of type T to the front of the deque */
     public void addFirst(T item) {
+        TNode newList = new TNode(item, sentinel, sentinel.next);
         size += 1;
-        sentinel.next.prev = new TNode(item, sentinel.next, sentinel);
-        sentinel.next = sentinel.next.prev;
+        sentinel.next.prev = newList;
+        sentinel.next = newList;
     }
 
     /** Adds an item of type T to the back of the deque */
     public  void addLast(T item) {
+        TNode newList = new TNode(item, sentinel.prev, sentinel);
         size += 1;
-        sentinel.prev.next = new TNode(item, sentinel.prev, sentinel);
-        sentinel.prev = sentinel.prev.next;
+        sentinel.prev.next = newList;
+        sentinel.prev = newList;
     }
 
     /** Returns true if deque is empty, false otherwise */
@@ -61,7 +63,8 @@ public class LinkedListDeque<T> {
         }
     }
 
-    /** Removes and returns the item at the front of the deque. If no such item exists, returns null */
+    /** Removes and returns the item at the front of the deque.
+     * If no such item exists, returns null */
     public T removeFirst() {
         if (size == 0) {
             return null;
@@ -73,19 +76,21 @@ public class LinkedListDeque<T> {
         return ret;
     }
 
-    /** Removes and returns the item at the back of the deque. If no such item exists, returns null */
+    /** Removes and returns the item at the back of the deque.
+     * If no such item exists, returns null */
     public T removeLast() {
         if (size == 0) {
             return null;
         }
-        T ret = sentinel.next.item;
-        sentinel.next.next.prev = sentinel;
-        sentinel.next = sentinel.next.next;
+        T ret = sentinel.prev.item;
+        sentinel.prev.prev.next = sentinel;
+        sentinel.prev = sentinel.prev.prev;
         size -= 1;
         return ret;
     }
 
-    /** Gets the item at the given index, where 0 is the front, 1 is the next item, and so forth. If no such item exists, returns null */
+    /** Gets the item at the given index, where 0 is the front,
+     * 1 is the next item, and so forth. If no such item exists, returns null */
     public T get(int index) {
         if (index >= size) {
             return null;

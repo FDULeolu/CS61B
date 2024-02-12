@@ -1,12 +1,11 @@
 public class ArrayDeque<T> {
-
     private int size;
     private T[] items;
     private int front;
     private int last;
 
     /** Creates an empty array deque */
-    public void ArrayDeque() {
+    public ArrayDeque() {
         items = (T[]) new Object[8];
         size = 0;
         front = 4;
@@ -61,7 +60,8 @@ public class ArrayDeque<T> {
     }
 
 
-    /** Check the length of array to keep the usage ratio is between 25% to 100%, or the size of the deque is less than 16 */
+    /** Check the length of array to keep the usage ratio is between 25% to 100%,
+     * or the size of the deque is less than 16 */
     private void sizeChecker() {
         if (size / items.length < 0.25 && size >= 16) {
             shrink();
@@ -108,12 +108,16 @@ public class ArrayDeque<T> {
 
     /** Prints the items in the deque from first to last, separated by a space */
     public void printDeque() {
+        if (size == 0) {
+            return;
+        }
         for (int i = front; i <= last; i = addOne(i, items.length)) {
             System.out.println(items[i]);
         }
     }
 
-    /** Removes and returns the item at the front of the deque. If no such item exists, returns null */
+    /** Removes and returns the item at the front of the deque.
+     * If no such item exists, returns null */
     public T removeFirst() {
         if (size == 0) {
             return null;
@@ -130,7 +134,8 @@ public class ArrayDeque<T> {
         }
     }
 
-    /** Removes and returns the item at the back of the deque. If no such item exists, returns null */
+    /** Removes and returns the item at the back of the deque.
+     * If no such item exists, returns null */
     public T removeLast() {
         if (size == 0) {
             return null;
@@ -147,7 +152,8 @@ public class ArrayDeque<T> {
         }
     }
 
-    /** Gets the item at the given index, where 0 is the front, 1 is the next item, and so forth. If no such item exists, returns null */
+    /** Gets the item at the given index, where 0 is the front, 1 is the next item,
+     * and so forth. If no such item exists, returns null */
     public T get(int index) {
         int ptr = front;
         if (index >= size) {
