@@ -33,13 +33,14 @@ public class ArrayDeque<T> {
     private void grow() {
         T[] newArray = (T[]) new Object[items.length * 2];
         int ptr1 = front;
-        int ptr2 = items.length / 2;
-        while (ptr1 != addOne(last, items.length)) {
+        int ptr2 = 0;
+        while (ptr1 != last) {
             newArray[ptr2] = items[ptr1];
             ptr2 = addOne(ptr2, items.length * 2);
             ptr1 = addOne(ptr1, items.length);
         }
-        front = items.length / 2;
+        newArray[ptr2] = items[ptr1];
+        front = 0;
         last = ptr2;
         items = newArray;
     }
@@ -49,11 +50,12 @@ public class ArrayDeque<T> {
         T[] newArray = (T[]) new Object[items.length / 2];
         int ptr1 = front;
         int ptr2 = 0;
-        while (ptr1 != addOne(last, items.length)) {
+        while (ptr1 != last) {
             newArray[ptr2] = items[ptr1];
             ptr2 = addOne(ptr2, items.length / 2);
             ptr1 = addOne(ptr1, items.length);
         }
+        newArray[ptr2] = items[ptr1];
         front = 0;
         last = ptr2;
         items = newArray;
@@ -65,7 +67,7 @@ public class ArrayDeque<T> {
     private void sizeChecker() {
         if (size / items.length < 0.25 && size >= 16) {
             shrink();
-        } else if (size == items.length) {
+        } else if (size > items.length) {
             grow();
         }
     }
