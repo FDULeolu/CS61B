@@ -7,6 +7,5 @@ public class ArrayDequeTest {
         for (int i = 0; i < 63; i++) {
             myDeque.removeFirst();
         }
-        System.out.println(myDeque.getLength());
     }
 }

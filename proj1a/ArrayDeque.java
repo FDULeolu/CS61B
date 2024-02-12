@@ -169,7 +169,4 @@ public class ArrayDeque<T> {
         return items[ptr];
     }
 
-    public int getLength() {
-        return items.length;
-    }
 }
