@@ -1,4 +1,4 @@
-/** If you project is set up properly, this file should execute. 
+/** If your project is set up properly, this file should execute. 
 * One thing you might consider is to try printing out the sequence of
 * operations */
 public class StudentArrayDequeLauncher {
