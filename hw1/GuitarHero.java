@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GuitarHero {
-    private static final Map<Character, Integer> keyboardIndexMap = new HashMap<>();
+    private static final Map<Character, Integer> KEYBOARD_INDEX_MAP = new HashMap<>();
 
-    private static final String keyboard = "q2we4r5ty7u8i9op-[=zxdcfvgbnjmk,.;/' ";
+    private static final String KEYBOARD = "q2we4r5ty7u8i9op-[=zxdcfvgbnjmk,.;/' ";
 
     private GuitarString[] strings;
     private double[] vol;
@@ -32,7 +32,7 @@ public class GuitarHero {
         vol = new double[37];
         for (int i = 0; i < strings.length; i++) {
             strings[i] = new GuitarString(440.0 * Math.pow(2.0, (i - 24.0) / 12.0));
-            keyboardIndexMap.put(keyboard.charAt(i), i);
+            KEYBOARD_INDEX_MAP.put(KEYBOARD.charAt(i), i);
             vol[i] = 0.0;
         }
     }
@@ -42,8 +42,8 @@ public class GuitarHero {
         while (true) {
             if (StdDraw.hasNextKeyTyped()) {
                 char key = StdDraw.nextKeyTyped();
-                if (keyboardIndexMap.containsKey(key)) {
-                    int index = keyboardIndexMap.get(key);
+                if (KEYBOARD_INDEX_MAP.containsKey(key)) {
+                    int index = KEYBOARD_INDEX_MAP.get(key);
                     guitarHero.strings[index].pluck();
                     guitarHero.vol[index] = 1.0;
                 }
