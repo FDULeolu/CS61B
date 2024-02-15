@@ -12,18 +12,18 @@ import static org.junit.Assert.*;
  */
 
 public class TestGuitarString {
-/*    @Test
+    @Test
     public void testPluckTheAString() {
-        double CONCERT_A = 440.0;
+        double CONCERT_A = 523.251;
         GuitarString aString = new GuitarString(CONCERT_A);
         aString.pluck();
         for (int i = 0; i < 50000; i += 1) {
             StdAudio.play(aString.sample());
             aString.tic();
         }
-    }*/
+    }
 
-/*
+
     @Test
     public void testTic() {
         // Create a GuitarString of frequency 11025, which
@@ -31,7 +31,7 @@ public class TestGuitarString {
         GuitarString s = new GuitarString(11025);
         s.pluck();
 
-        // Record the front four values, ticcing as we go.
+        // Record the front four values, ticking as we go.
         double s1 = s.sample();
         s.tic();
         double s2 = s.sample();
@@ -52,7 +52,7 @@ public class TestGuitarString {
         assertEquals(expected, s5, 0.001);
 
     }
-*/
+
 
     /** Calls tests for GuitarString. */
     public static void main(String[] args) {
