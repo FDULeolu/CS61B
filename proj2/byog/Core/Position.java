@@ -38,6 +38,13 @@ public class Position {
         return new Position(xPos + 1, yPos);
     }
 
-
+    public String toString() {
+        StringBuilder returnSB = new StringBuilder("(");
+        returnSB.append(xPos);
+        returnSB.append(", ");
+        returnSB.append(yPos);
+        returnSB.append(")");
+        return returnSB.toString();
+    }
 
 }

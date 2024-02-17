@@ -9,10 +9,10 @@ import java.util.Random;
 public class World implements Serializable {
 
     private static final long serialVersionUID = 123123123123123L;
-    private Random r;
-    private int WIDTH;
-    private int HEIGHT;
-    private TETile[][] world;
+    private final Random r;
+    private final int WIDTH;
+    private final int HEIGHT;
+    private final TETile[][] world;
 
     /** Initialize a new world */
     public World(int w, int h, int seed) {
@@ -73,8 +73,8 @@ public class World implements Serializable {
 
         /** Returns true if the position is out of the limitation */
         private boolean isOut(Position p) {
-            if (p.getXPos() <= 1 || p.getXPos() >= WIDTH - 2
-                    || p.getYPos() <= 1 || p.getYPos() >= WIDTH - 2) {
+            if (p.getXPos() < 1 || p.getXPos() > WIDTH - 2
+                    || p.getYPos() < 1 || p.getYPos() > HEIGHT - 2) {
                 return true;
             }
             return false;
@@ -91,7 +91,7 @@ public class World implements Serializable {
         /** GO up, down, left or right randomly and the "PATH" should
          *  leave enough space to generate the wall */
         private Position randomWalk(Position p) {
-            int chooseDirection = r.nextInt(3);
+            int chooseDirection = r.nextInt(4);
             Position newPos;
 
             // Choose a direction randomly
@@ -124,7 +124,7 @@ public class World implements Serializable {
             positions[6] = new Position(x , y - 1);
             positions[7] = new Position(x + 1, y - 1);
 
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 8; i++) {
                 int xpos = positions[i].getXPos();
                 int ypos = positions[i].getYPos();
                 if (t[xpos][ypos].equals(Tileset.NOTHING)) {
@@ -152,6 +152,7 @@ public class World implements Serializable {
         world[ptr.getXPos()][ptr.getYPos()] = Tileset.FLOOR;
         while ((double) distance / (WIDTH * HEIGHT) < roomRatio) {
             ptr = gh.randomWalk(ptr);
+            System.out.println(ptr.toString());
             world[ptr.getXPos()][ptr.getYPos()] = Tileset.FLOOR;
             distance++;
         }
@@ -165,6 +166,10 @@ public class World implements Serializable {
             }
         }
 
+    }
+
+    public TETile[][] getWorld() {
+        return world;
     }
 
 
