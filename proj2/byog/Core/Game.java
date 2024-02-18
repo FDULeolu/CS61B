@@ -33,6 +33,11 @@ public class Game {
         // drawn if the same inputs had been given to playWithKeyboard().
 
         TETile[][] finalWorldFrame = null;
+        if (input == "l") {
+            World world = World.loadWorld();
+            finalWorldFrame = world.getWorld();
+        }
+
         return finalWorldFrame;
     }
 }

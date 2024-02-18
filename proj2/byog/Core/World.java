@@ -15,6 +15,12 @@ public class World implements Serializable {
     private final TETile[][] world;
 
     /** Initialize a new world */
+    public World() {
+        world = new TETile[w][h];
+        r = new Random(seed);
+        WIDTH = w;
+        HEIGHT = h;
+    }
     public World(int w, int h, int seed) {
         world = new TETile[w][h];
         r = new Random(seed);
@@ -23,7 +29,7 @@ public class World implements Serializable {
     }
 
     /** Load the existing world, or create a new world */
-    public static World loadWorld(int w, int h, int seed) {
+    public static World loadWorld() {
         File f = new File("./RandomWorld/world.ser");
         if (f.exists()) {
             try {
@@ -43,9 +49,7 @@ public class World implements Serializable {
                 System.exit(0);
             }
         }
-
-        return new World(w, h, seed);
-
+        return null;
     }
 
     /** Save the word instance that have been generalized */
@@ -96,10 +100,38 @@ public class World implements Serializable {
 
             // Choose a direction randomly
             switch (chooseDirection) {
-                case 0: newPos = new Position(p.goUp()); break;
-                case 1: newPos = new Position(p.goDown()); break;
-                case 2: newPos = new Position(p.goLeft()); break;
-                default: newPos = new Position(p.goRight()); break;
+                case 0: {
+                    if ((chooseDirection + p.getDirection()) == 3) {
+                        return randomWalk(p);
+                    }
+                    newPos = new Position(p.goUp());
+                    newPos.setDirection(chooseDirection);
+                    break;
+                }
+                case 1: {
+                    if ((chooseDirection + p.getDirection()) == 3) {
+                        return randomWalk(p);
+                    }
+                    newPos = new Position(p.goLeft());
+                    newPos.setDirection(chooseDirection);
+                    break;
+                }
+                case 2: {
+                    if ((chooseDirection + p.getDirection()) == 3) {
+                        return randomWalk(p);
+                    }
+                    newPos = new Position(p.goRight());
+                    newPos.setDirection(chooseDirection);
+                    break;
+                }
+                default: {
+                    if ((chooseDirection + p.getDirection()) == 3) {
+                        return randomWalk(p);
+                    }
+                    newPos = new Position(p.goDown());
+                    newPos.setDirection(chooseDirection);
+                    break;
+                }
             }
 
             // Leave enough space to generate the wall
@@ -145,14 +177,14 @@ public class World implements Serializable {
         }
 
         // Generalize "Path" and "Room" randomly
-        double roomRatio = 0.4 + 0.2 * r.nextDouble();
+        double roomRatio = 0.8 + 0.2 * r.nextDouble();
         int distance = 1;
         GeneralizeHelper gh = new GeneralizeHelper();
         Position ptr = gh.startPosition();
         world[ptr.getXPos()][ptr.getYPos()] = Tileset.FLOOR;
         while ((double) distance / (WIDTH * HEIGHT) < roomRatio) {
             ptr = gh.randomWalk(ptr);
-            System.out.println(ptr.toString());
+//            System.out.println(ptr.toString());
             world[ptr.getXPos()][ptr.getYPos()] = Tileset.FLOOR;
             distance++;
         }

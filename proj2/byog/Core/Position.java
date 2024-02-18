@@ -3,10 +3,13 @@ package byog.Core;
 public class Position {
     private int xPos;
     private int yPos;
-
+    /** 0 represents up, 1 represents left, 2 represents
+     *  right and 3 represents down */
+    private int direction;
     public Position(int x, int y) {
         xPos = x;
         yPos = y;
+        direction = 0;
     }
 
     public Position(Position p) {
@@ -45,6 +48,14 @@ public class Position {
         returnSB.append(yPos);
         returnSB.append(")");
         return returnSB.toString();
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int d) {
+        direction = d;
     }
 
 }
