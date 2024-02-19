@@ -3,6 +3,9 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Game {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
@@ -36,8 +39,27 @@ public class Game {
         if (input == "l") {
             World world = World.loadWorld();
             finalWorldFrame = world.getWorld();
-        }
+            return finalWorldFrame;
+        } else if (input.charAt(0) == 'n') {
+            String number = "";
+            Pattern pattern = Pattern.compile("\\d+");
+            Matcher matcher = pattern.matcher(input);
 
-        return finalWorldFrame;
+            while (matcher.find()) {
+                String numberStr = matcher.group();
+                number += numberStr;
+            }
+            int seed = Integer.parseInt(number);
+            World word = new World();
+            word.createWorld(WIDTH, HEIGHT, seed);
+            word.generalizeWorld();
+            if (input.charAt(input.length() - 1) == 'q') {
+                World.saveWorld(word);
+            }
+            finalWorldFrame = word.getWorld();
+            return finalWorldFrame;
+
+        }
+        throw new RuntimeException("Illegal input!");
     }
 }

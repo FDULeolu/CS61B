@@ -9,19 +9,13 @@ import java.util.Random;
 public class World implements Serializable {
 
     private static final long serialVersionUID = 123123123123123L;
-    private final Random r;
-    private final int WIDTH;
-    private final int HEIGHT;
-    private final TETile[][] world;
+    private Random r;
+    private int WIDTH;
+    private int HEIGHT;
+    private TETile[][] world;
 
     /** Initialize a new world */
-    public World() {
-        world = new TETile[w][h];
-        r = new Random(seed);
-        WIDTH = w;
-        HEIGHT = h;
-    }
-    public World(int w, int h, int seed) {
+    public void createWorld(int w, int h, int seed) {
         world = new TETile[w][h];
         r = new Random(seed);
         WIDTH = w;
