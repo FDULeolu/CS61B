@@ -16,6 +16,7 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+
     }
 
     /**
@@ -35,31 +36,44 @@ public class Game {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
 
-        TETile[][] finalWorldFrame = null;
-        if (input == "l") {
-            World world = World.loadWorld();
+        TETile[][] finalWorldFrame;
+        World world = new World();
+        if (input.charAt(0) == 'l') {
+            world = World.loadWorld();
             finalWorldFrame = world.getWorld();
             return finalWorldFrame;
-        } else if (input.charAt(0) == 'n') {
-            String number = "";
-            Pattern pattern = Pattern.compile("\\d+");
-            Matcher matcher = pattern.matcher(input);
-
-            while (matcher.find()) {
-                String numberStr = matcher.group();
-                number += numberStr;
-            }
-            int seed = Integer.parseInt(number);
-            World word = new World();
-            word.createWorld(WIDTH, HEIGHT, seed);
-            word.generalizeWorld();
-            if (input.charAt(input.length() - 1) == 'q') {
-                World.saveWorld(word);
-            }
-            finalWorldFrame = word.getWorld();
-            return finalWorldFrame;
-
+        } else {
+            int seed = getSeed(input);
+            world.createWorld(HEIGHT, WIDTH, seed);
+            world.generalizeWorld();
         }
-        throw new RuntimeException("Illegal input!");
+
+        // save the generalized world
+        if (input.charAt(input.length() - 1) == 'q') {
+            World.saveWorld(world);
+        }
+        finalWorldFrame = world.getWorld();
+        return finalWorldFrame;
+    }
+
+    private static int getSeed(String input) {
+        int ptr1 = 0;
+        int ptr2 = 0;
+        for (int i = 0; i < input.length(); i++) {
+            if (input.charAt(i) == 'n') {
+                ptr1 = i;
+            } else if (input.charAt(i) == 's') {
+                ptr2 = i;
+            }
+        }
+        int seed;
+        try {
+            String stringNum = input.substring(ptr1 + 1, ptr2);
+            seed = Integer.parseInt(stringNum);
+        } catch (Exception e) {
+            throw new RuntimeException("Illegal input!");
+        }
+        return seed;
     }
 }
+

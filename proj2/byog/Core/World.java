@@ -6,6 +6,8 @@ import byog.TileEngine.Tileset;
 import java.io.*;
 import java.util.Random;
 
+
+
 public class World implements Serializable {
 
     private static final long serialVersionUID = 123123123123123L;
@@ -24,7 +26,7 @@ public class World implements Serializable {
 
     /** Load the existing world, or create a new world */
     public static World loadWorld() {
-        File f = new File("./RandomWorld/world.ser");
+        File f = new File("world.ser");
         if (f.exists()) {
             try {
                 FileInputStream fs = new FileInputStream(f);
@@ -46,9 +48,10 @@ public class World implements Serializable {
         return null;
     }
 
+
     /** Save the word instance that have been generalized */
     public static void saveWorld(World w) {
-        File f = new File("./RandomWorld/world.ser");
+        File f = new File("world.ser");
         try {
             if (!f.exists()) {
                 f.createNewFile();
