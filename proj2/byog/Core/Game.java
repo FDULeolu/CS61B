@@ -30,7 +30,7 @@ public class Game {
         StdDraw.setPenColor(StdDraw.WHITE);
 
         StdDraw.setFont(font50);
-        StdDraw.text(WIDTH / 2, HEIGHT * 0.8, "CS61B: THE GAME");
+        StdDraw.text(WIDTH / 2, HEIGHT * 0.8, "Endless Journey");
 
         StdDraw.setFont(font20);
         StdDraw.text(WIDTH / 2, HEIGHT * 0.5, "New Game (N)");
@@ -43,11 +43,15 @@ public class Game {
             if (StdDraw.hasNextKeyTyped()) {
                 char c = StdDraw.nextKeyTyped();
                 switch (c) {
+
+                    // Load world from file
                     case 'l': {
                         w = World.loadWorld();
                         ter.renderFrame(w.getWorld());
                         break;
                     }
+
+                    // Enter the seed to create a new world
                     case 'n': {
                         char in = 'n';
                         String inputString = "";
@@ -59,6 +63,7 @@ public class Game {
                             StdDraw.show();
                             if (StdDraw.hasNextKeyTyped()) {
                                 in = StdDraw.nextKeyTyped();
+                                // Support BackSpace
                                 if (in == '\b' && inputString.length() > 0) {
                                     StringBuilder sb = new StringBuilder(inputString);
                                     sb.deleteCharAt(sb.length() - 1);
@@ -73,17 +78,23 @@ public class Game {
                         ter.renderFrame(w.getWorld());
                         break;
                     }
-                    case 'q': {
-                        if (w.isHasGeneralized()) {
-                            World.saveWorld(w);
+
+                    // Exit the game and save the world if the world has been generated
+                    case ':': {
+                        while (true) {
+                            if (StdDraw.hasNextKeyTyped()) {
+                                char t = StdDraw.nextKeyTyped();
+                                if (t == 'q' && w.isHasGeneralized()) {
+                                    World.saveWorld(w);
+                                    System.exit(0);
+                                } else { break; }
+                            }
                         }
-                        System.exit(0);
                     }
                     default:
                 }
             }
         }
-
     }
 
     /**
@@ -116,7 +127,7 @@ public class Game {
         }
 
         // save the generalized world
-        if (input.charAt(input.length() - 1) == 'q') {
+        if (input.charAt(input.length() - 2) == ':' && input.charAt(input.length() - 1) == 'q') {
             World.saveWorld(world);
         }
         finalWorldFrame = world.getWorld();
@@ -138,7 +149,7 @@ public class Game {
             String stringNum = input.substring(ptr1 + 1, ptr2);
             seed = Integer.parseInt(stringNum);
         } catch (Exception e) {
-            throw new RuntimeException("Illegal input!");
+            throw new RuntimeException("Illegal input! Restart the game!");
         }
         return seed;
     }

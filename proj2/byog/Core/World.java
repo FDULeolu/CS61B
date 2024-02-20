@@ -2,7 +2,6 @@ package byog.Core;
 
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
-import org.hamcrest.Factory;
 
 import java.io.*;
 import java.util.Random;
