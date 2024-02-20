@@ -2,6 +2,7 @@ package byog.Core;
 
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
+import org.hamcrest.Factory;
 
 import java.io.*;
 import java.util.Random;
@@ -15,6 +16,7 @@ public class World implements Serializable {
     private int WIDTH;
     private int HEIGHT;
     private TETile[][] world;
+    private boolean hasGeneralized = false;
 
     /** Initialize a new world */
     public void createWorld(int w, int h, int seed) {
@@ -195,10 +197,16 @@ public class World implements Serializable {
             }
         }
 
+        hasGeneralized = true;
+
     }
 
     public TETile[][] getWorld() {
         return world;
+    }
+
+    public boolean isHasGeneralized() {
+        return hasGeneralized;
     }
 
 

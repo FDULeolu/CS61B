@@ -2,7 +2,9 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import edu.princeton.cs.introcs.StdDraw;
 
+import java.awt.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +18,71 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        StdDraw.enableDoubleBuffering();
+        World w = new World();
+        TERenderer ter = new TERenderer();
+        ter.initialize(WIDTH, HEIGHT);
+
+        // Draw welcome page
+        Font font50 = new Font("Arial", Font.PLAIN, 50);
+        Font font20 = new Font("Arial", Font.PLAIN, 20);
+        StdDraw.clear(StdDraw.BLACK);
+        StdDraw.setPenColor(StdDraw.WHITE);
+
+        StdDraw.setFont(font50);
+        StdDraw.text(WIDTH / 2, HEIGHT * 0.8, "CS61B: THE GAME");
+
+        StdDraw.setFont(font20);
+        StdDraw.text(WIDTH / 2, HEIGHT * 0.5, "New Game (N)");
+        StdDraw.text(WIDTH / 2, HEIGHT * 0.45, "Load Game (L)");
+        StdDraw.text(WIDTH / 2, HEIGHT * 0.4, "Quit (Q)");
+        StdDraw.show();
+
+
+        while (true) {
+            if (StdDraw.hasNextKeyTyped()) {
+                char c = StdDraw.nextKeyTyped();
+                switch (c) {
+                    case 'l': {
+                        w = World.loadWorld();
+                        ter.renderFrame(w.getWorld());
+                        break;
+                    }
+                    case 'n': {
+                        char in = 'n';
+                        String inputString = "";
+                        while (in != 's') {
+                            StdDraw.clear(StdDraw.BLACK);
+                            StdDraw.text(WIDTH / 2, HEIGHT * 0.5, "Enter a number you like!");
+                            StdDraw.text(WIDTH / 2, HEIGHT * 0.45, "(Ending with an 's' when you're done)");
+                            StdDraw.text(WIDTH / 2, HEIGHT * 0.3, inputString);
+                            StdDraw.show();
+                            if (StdDraw.hasNextKeyTyped()) {
+                                in = StdDraw.nextKeyTyped();
+                                if (in == '\b' && inputString.length() > 0) {
+                                    StringBuilder sb = new StringBuilder(inputString);
+                                    sb.deleteCharAt(sb.length() - 1);
+                                    inputString = sb.toString();
+                                    continue;
+                                }
+                                inputString += in;
+                            }
+                        }
+                        w.createWorld(WIDTH, HEIGHT, getSeed(inputString));
+                        w.generalizeWorld();
+                        ter.renderFrame(w.getWorld());
+                        break;
+                    }
+                    case 'q': {
+                        if (w.isHasGeneralized()) {
+                            World.saveWorld(w);
+                        }
+                        System.exit(0);
+                    }
+                    default:
+                }
+            }
+        }
 
     }
 
