@@ -91,6 +91,8 @@ public class Game {
                             }
                         }
                     }
+
+                    // Other inputs
                     default:
                 }
             }
