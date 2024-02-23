@@ -7,7 +7,10 @@ public class Percolation {
     private int nGrid;
     private Site[][] sites;
     private WeightedQuickUnionUF percolateSite;
+    private WeightedQuickUnionUF percolateSiteWithoutBotton;
     private int numberOfOpenSites;
+    private int topSite;
+    private int bottomSite;
 
     private class Site {
         boolean isOpen;
@@ -23,28 +26,21 @@ public class Percolation {
         numberOfOpenSites = 0;
         nGrid = N;
         sites = new Site[nGrid][nGrid];
-        percolateSite = new WeightedQuickUnionUF(nGrid * nGrid);
+        topSite = N * N;
+        bottomSite = N * N + 1;
+        percolateSite = new WeightedQuickUnionUF(nGrid * nGrid + 2);
+        percolateSiteWithoutBotton = new WeightedQuickUnionUF(nGrid * nGrid + 1);
         for (int i = 0; i < nGrid; i++) {
             for (int j = 0; j < nGrid; j++) {
                 if (i == 0) {
-                    percolateSite.union(0, calIndex(0, j));
+                    percolateSite.union(topSite, calIndex(i, j));
+                    percolateSiteWithoutBotton.union(topSite, calIndex(i, j));
+                }
+                if (i == N - 1) {
+                    percolateSite.union(bottomSite, calIndex(i, j));
                 }
                 sites[i][j] = new Site();
             }
-        }
-    }
-
-    private void concat(int x1, int y1, int x2, int y2) {
-        if (percolateSite.find(calIndex(x1, y1)) == 0) {
-            percolateSite.union(calIndex(x1, y1), calIndex(x2, y2));
-            // DEBUG
-            System.out.println("(" + x2 + ", " + y2 + ") is added to (" + x1 + ", " + y1 + ")");
-            // DEBUG
-        } else {
-            percolateSite.union(calIndex(x2, y2), calIndex(x1, y1));
-            // DEBUG
-            System.out.println("(" + x1 + ", " + y1 + ") is added to (" + x2 + ", " + y2 + ")");
-            // DEBUG
         }
     }
 
@@ -71,16 +67,20 @@ public class Percolation {
             numberOfOpenSites++;
             sites[row][col].isOpen = true;
             if (checkIndex(row - 1, col) && sites[row - 1][col].isOpen) {
-                concat(row - 1, col, row, col);
+                percolateSite.union(calIndex(row - 1, col), calIndex(row, col));
+                percolateSiteWithoutBotton.union(calIndex(row - 1, col), calIndex(row, col));
             }
             if (checkIndex(row + 1, col) && sites[row + 1][col].isOpen) {
-                concat(row + 1, col, row, col);
+                percolateSite.union(calIndex(row + 1, col), calIndex(row, col));
+                percolateSiteWithoutBotton.union(calIndex(row + 1, col), calIndex(row, col));
             }
             if (checkIndex(row, col - 1) && sites[row][col - 1].isOpen) {
-                concat(row, col - 1, row, col);
+                percolateSite.union(calIndex(row, col - 1), calIndex(row, col));
+                percolateSiteWithoutBotton.union(calIndex(row, col - 1), calIndex(row, col));
             }
             if (checkIndex(row, col + 1) && sites[row][col + 1].isOpen) {
-                concat(row , col - 1, row, col);
+                percolateSite.union(calIndex(row, col + 1), calIndex(row, col));
+                percolateSiteWithoutBotton.union(calIndex(row, col + 1), calIndex(row, col));
             }
         }
     }
@@ -95,7 +95,7 @@ public class Percolation {
         if (!isOpen(row, col)) {
             return false;
         }
-        return percolateSite.find(calIndex(row, col)) < nGrid;
+        return percolateSiteWithoutBotton.connected(topSite, calIndex(row, col));
     }
 
     public int numberOfOpenSites() {
@@ -103,12 +103,10 @@ public class Percolation {
     }
 
     public boolean percolates() {
-        for (int i = 0; i < nGrid; i++) {
-            if (percolateSite.find(calIndex(nGrid - 1, i)) < nGrid) {
-                return true;
-            }
+        if (numberOfOpenSites == 0) {
+            return false;
         }
-        return false;
+        return percolateSite.connected(topSite, bottomSite);
     }
 
     public static void main(String[] args) {}
