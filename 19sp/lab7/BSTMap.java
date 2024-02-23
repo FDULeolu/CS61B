@@ -154,7 +154,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                 } else if (x.left != null && x.right == null) {
                     x = x.left;
                     return x;
-                } else if (x.left == null && x.right != null) {
+                } else if (x.left == null) {
                     x = x.right;
                     return x;
                 } else {
@@ -195,10 +195,10 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else if (x.left != null && x.right == null) {
             printInOrder(root.left);
             printNode(root);
-        } else if (x.left == null && x.right != null) {
+        } else if (x.left == null) {
             printNode(x);
             printNode(x.right);
-        } else if (x.left != null && x.right != null) {
+        } else {
             printNode(x.left);
             printNode(x);
             printNode(x.right);
