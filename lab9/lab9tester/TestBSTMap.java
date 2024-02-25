@@ -2,8 +2,11 @@ package lab9tester;
 
 import static org.junit.Assert.*;
 
+import edu.princeton.cs.algs4.In;
 import org.junit.Test;
 import lab9.BSTMap;
+
+import java.util.Optional;
 
 /**
  * Tests by Brendan Hu, Spring 2015, revised for 2018 by Josh Hug
@@ -84,6 +87,22 @@ public class TestBSTMap {
         b.put("hi", 1);
         assertTrue(b.containsKey("hi"));
         assertTrue(b.get("hi") != null);
+    }
+
+    @Test
+    public void testRemoveRoot() {
+        BSTMap<String,String> q = new BSTMap<String,String>();
+        q.put("c","a");
+        q.put("b","a");
+        q.put("a","a");
+        q.put("d","a");
+        q.put("e","a"); // a b c d e
+        assertTrue(null != q.remove("c"));
+        assertTrue(q.get("c") == null);
+        assertTrue(q.get("a") != null);
+        assertTrue(q.get("b") != null);
+        assertTrue(q.get("d") != null);
+        assertTrue(q.get("e") != null);
     }
 
     public static void main(String[] args) {

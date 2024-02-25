@@ -120,7 +120,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
         } else if (x.right != null) {
             return findMaxInLeftTree(x.right);
         } else {
-            return findMaxInLeftTree(x.left);
+            return x;
         }
     }
 
@@ -147,6 +147,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
             } else {
                 Node maxNode = findMaxInLeftTree(x.left);
                 x.value = maxNode.value;
+                x.key = maxNode.key;
                 x.left = deleteFromKey(x.left, maxNode.key);
                 return x;
             }
@@ -179,6 +180,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
                 } else {
                     Node maxNode = findMaxInLeftTree(x.left);
                     x.value = maxNode.value;
+                    x.key = maxNode.key;
                     x.left = deleteFromKey(x.left, maxNode.key);
                     return x;
                 }
@@ -194,6 +196,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     public V remove(K key) {
         V value = get(key);
         root = deleteFromKey(root, key);
+        size--;
         return value;
     }
 
@@ -204,6 +207,7 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V> {
     @Override
     public V remove(K key, V value) {
         root = deleteFromKeyAndValue(root, key, value);
+        size--;
         return value;
     }
 
