@@ -1,4 +1,7 @@
+import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.Queue;
+
+import java.util.Random;
 
 public class MergeSort {
     /**
@@ -34,8 +37,13 @@ public class MergeSort {
     /** Returns a queue of queues that each contain one item from items. */
     private static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
-        // Your code here!
-        return null;
+        Queue<Queue<Item>> singleItemQueues = new Queue<>();
+        while (!items.isEmpty()) {
+            Queue<Item> singleItemQueue = new Queue<>();
+            singleItemQueue.enqueue(items.dequeue());
+            singleItemQueues.enqueue(singleItemQueue);
+        }
+        return singleItemQueues;
     }
 
     /**
@@ -53,14 +61,37 @@ public class MergeSort {
      */
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
-        // Your code here!
-        return null;
+        Queue<Item> mergedQueue = new Queue<>();
+        while (!q1.isEmpty() || !q2.isEmpty()) {
+            mergedQueue.enqueue(getMin(q1, q2));
+        }
+        return mergedQueue;
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
-        // Your code here!
-        return items;
+        Queue<Item> modifiedItems = new Queue<>();
+        for (Item i : items) {
+            modifiedItems.enqueue(i);
+        }
+        Queue<Queue<Item>> singleQueue = makeSingleItemQueues(modifiedItems);
+        while (singleQueue.size() > 1) {
+            Queue<Item> q1 = singleQueue.dequeue();
+            Queue<Item> q2 = singleQueue.dequeue();
+            singleQueue.enqueue(mergeSortedQueues(q1, q2));
+        }
+        return singleQueue.dequeue();
+    }
+
+    public static void main(String[] args) {
+        Queue<Integer> nums = new Queue<>();
+        Random r = new Random();
+        for (int i = 0; i < 20; i++) {
+            nums.enqueue(r.nextInt(0, 100));
+        }
+        Queue<Integer> sortedNums = MergeSort.mergeSort(nums);
+        System.out.println(nums);
+        System.out.println(sortedNums);
     }
 }
