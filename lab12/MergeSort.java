@@ -88,7 +88,7 @@ public class MergeSort {
         Queue<Integer> nums = new Queue<>();
         Random r = new Random();
         for (int i = 0; i < 20; i++) {
-            nums.enqueue(r.nextInt(0, 100));
+            nums.enqueue(r.nextInt(100));
         }
         Queue<Integer> sortedNums = MergeSort.mergeSort(nums);
         System.out.println(nums);

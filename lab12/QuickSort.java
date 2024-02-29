@@ -84,7 +84,7 @@ public class QuickSort {
         Queue<Integer> nums = new Queue<>();
         Random r = new Random();
         for (int i = 0; i < 20; i++) {
-            nums.enqueue(r.nextInt(0, 100));
+            nums.enqueue(r.nextInt(100));
         }
         Queue<Integer> sortedNums = QuickSort.quickSort(nums);
         System.out.println(nums);
