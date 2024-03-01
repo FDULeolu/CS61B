@@ -17,7 +17,7 @@ public class TestPlip {
 
     /* Replace with the magic word given in lab.
      * If you are submitting early, just put in "early" */
-    public static final String MAGIC_WORD = "";
+    public static final String MAGIC_WORD = "early";
 
     @Test
     public void testBasics() {
@@ -36,10 +36,14 @@ public class TestPlip {
 
     @Test
     public void testReplicate() {
-
+        Plip p = new Plip(1.6);
+        Plip babyP = p.replicate();
+        assertNotSame(p, babyP);
+        assertEquals(0.8, p.energy(), 0.01);
+        assertEquals(0.8, babyP.energy(), 0.01);
     }
 
-    //@Test
+    @Test
     public void testChoose() {
         Plip p = new Plip(1.2);
         HashMap<Direction, Occupant> surrounded = new HashMap<Direction, Occupant>();
@@ -54,6 +58,18 @@ public class TestPlip {
 
         Action actual = p.chooseAction(surrounded);
         Action expected = new Action(Action.ActionType.STAY);
+
+        assertEquals(expected, actual);
+
+        //Test REPLICATE
+        surrounded = new HashMap<>();
+        surrounded.put(Direction.TOP, new Empty());
+        surrounded.put(Direction.BOTTOM, new Impassible());
+        surrounded.put(Direction.LEFT, new Impassible());
+        surrounded.put(Direction.RIGHT, new Impassible());
+
+        actual = p.chooseAction(surrounded);
+        expected = new Action(Action.ActionType.REPLICATE, Direction.TOP);
 
         assertEquals(expected, actual);
     }

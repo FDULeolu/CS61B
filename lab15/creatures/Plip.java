@@ -5,8 +5,10 @@ import huglife.Action;
 import huglife.Occupant;
 import huglife.HugLifeUtils;
 import java.awt.Color;
+import java.nio.channels.Pipe;
 import java.util.Map;
 import java.util.List;
+import java.util.Random;
 
 /** An implementation of a motile pacifist photosynthesizer.
  *  @author Josh Hug
@@ -42,7 +44,9 @@ public class Plip extends Creature {
      *  that you get this exactly correct.
      */
     public Color color() {
-        g = 63;
+        g = (int) ((255 - 63) / 2 * energy + 63);
+        r = 99;
+        b = 76;
         return color(r, g, b);
     }
 
@@ -55,11 +59,16 @@ public class Plip extends Creature {
      *  private static final variable. This is not required for this lab.
      */
     public void move() {
+        energy -= 0.15;
     }
 
 
     /** Plips gain 0.2 energy when staying due to photosynthesis. */
     public void stay() {
+        energy += 0.2;
+        if (energy > 2) {
+            energy = 2;
+        }
     }
 
     /** Plips and their offspring each get 50% of the energy, with none
@@ -67,7 +76,9 @@ public class Plip extends Creature {
      *  Plip.
      */
     public Plip replicate() {
-        return this;
+        Plip babyPlip = new Plip(energy / 2);
+        energy /= 2;
+        return babyPlip;
     }
 
     /** Plips take exactly the following actions based on NEIGHBORS:
@@ -81,7 +92,23 @@ public class Plip extends Creature {
      *  for an example to follow.
      */
     public Action chooseAction(Map<Direction, Occupant> neighbors) {
-        return new Action(Action.ActionType.STAY);
+        List<Direction> empties = getNeighborsOfType(neighbors, "empty");
+        List<Direction> enemies = getNeighborsOfType(neighbors, "clorus");
+        if (empties.isEmpty()) {
+            return new Action(Action.ActionType.STAY);
+        } else if (energy >= 1) {
+            Direction dir = empties.get(HugLifeUtils.randomInt(empties.size() - 1));
+            return new Action(Action.ActionType.REPLICATE, dir);
+        } else if (!enemies.isEmpty() && HugLifeUtils.random() < 0.5) {
+            return new Action(Action.ActionType.MOVE, empties.get(HugLifeUtils.randomInt(empties.size() - 1)));
+        } else {
+            return new Action(Action.ActionType.STAY);
+        }
+    }
+
+    @Override
+    public String name() {
+        return "plip";
     }
 
 }
