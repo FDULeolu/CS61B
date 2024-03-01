@@ -12,9 +12,10 @@ public class SawToothGenerator implements Generator {
         this.period = period;
     }
 
+    @Override
     public double next() {
         state++;
-        return normalize(state);
+        return normalize(state % period);
     }
 
     private double normalize(int x) {
