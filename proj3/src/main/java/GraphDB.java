@@ -22,6 +22,9 @@ public class GraphDB {
      * creating helper classes, e.g. Node, Edge, etc. */
     private final Map<Long, Node> nodes = new LinkedHashMap<>();
     private final Map<Long, Way> ways = new LinkedHashMap<>();
+    private final Map<Long, NameNode> nameNodes = new LinkedHashMap<>();
+    private final Map<String, List<Long>> locations = new LinkedHashMap<>();
+    private final Trie trieForNodeName = new Trie();
     private final KdTree kdTreeForNearestNeighbor = new KdTree();
 
     /**
@@ -185,15 +188,82 @@ public class GraphDB {
         return nodes.get(nodeId);
     }
 
+    public void addLocation(String name, long id) {
+        if (locations.containsKey(name)) {
+            locations.get(name).add(id);
+        } else {
+            locations.put(name, new ArrayList<>(Arrays.asList(id)));
+        }
+    }
+
     /** Add n2Id to n1's adjs set */
     public void addAdj(long n1Id, long n2Id) {
         nodes.get(n1Id).adjs.add(n2Id);
+    }
+
+    public void addCleanNameToTire(String cleanName, String name) {
+        trieForNodeName.add(cleanName, name);
+    }
+
+    public List<String> getLocationsByPrefix(String prefix) {
+        return collectFromTrie(prefix);
+    }
+
+    public List<String> collectFromTrie(String prefix) {
+        Trie.TrieNode prefixEnd = trieForNodeName.findNode(prefix);
+        List<String> res = new ArrayList<>();
+        if (prefixEnd == null) {
+            return res;
+        }
+        if (prefixEnd.isWord()) {
+            res.addAll(prefixEnd.getNames());
+        }
+        for (char c : prefixEnd.getChildren().keySet()) {
+            colHelper(prefix + c, res, prefixEnd.getChildren().get(c));
+        }
+        return res;
+    }
+
+    private void colHelper(String s, List<String> res, Trie.TrieNode node) {
+        if (node.isWord()) {
+            res.addAll(node.getNames());
+        }
+        for (char c : node.getChildren().keySet()) {
+            colHelper(s + c, res, node.getChildren().get(c));
+        }
+    }
+
+    private Map<String, Object> getNameNodeAsMap(long id) {
+        NameNode n = nameNodes.get(id);
+        Map<String, Object> res = new HashMap<>();
+        res.put("id", n.id);
+        res.put("lon", n.lon);
+        res.put("lat", n.lat);
+        res.put("name", n.name);
+        return res;
+    }
+
+    public List<Map<String, Object>> getLocations(String locationName) {
+        List<Map<String, Object>> res = new LinkedList<>();
+        if (!locations.containsKey(locationName)) {
+            return res;
+        }
+        for (long id : locations.get(locationName)) {
+            res.add(getNameNodeAsMap(id));
+        }
+        return res;
+    }
+
+    public Comparator<Long> getComparator() {
+        return new NodeComparator();
     }
 
     static class Node {
         long id;
         double lat;
         double lon;
+        double priority = 0;
+        double distTo = 0;
         List<Long> wayIds;
         Set<Long> adjs;
 
@@ -206,6 +276,51 @@ public class GraphDB {
         }
 
 
+    }
+
+    public void changePriority(long v, double newPriority) {
+        nodes.get(v).priority = newPriority;
+    }
+
+    public void changeDistTo(long v, double newDist) {
+        nodes.get(v).distTo = newDist;
+    }
+
+    public double getDistTo(long v) {
+        return nodes.get(v).distTo;
+    }
+
+    class NodeComparator implements Comparator<Long> {
+
+        @Override
+        public int compare(Long o1, Long o2) {
+            return Double.compare(nodes.get(o1).priority, nodes.get(o2).priority);
+        }
+    }
+
+    public List<Long> getWaysId(long v) {
+        return nodes.get(v).wayIds;
+    }
+
+    public String getWaysName(long w) {
+        return ways.get(w).name;
+    }
+
+    static class NameNode extends Node {
+
+        private String name;
+        public NameNode(long id, double lon, double lat, String name) {
+            super(id, lon, lat);
+            this.name = name;
+        }
+    }
+
+    public void addNameNode(NameNode n) {
+        nameNodes.put(n.id, n);
+    }
+
+    public String getNodeName(long id) {
+        return nameNodes.get(id).name;
     }
 
     static class Way {

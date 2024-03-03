@@ -130,7 +130,13 @@ public class GraphBuildingHandler extends DefaultHandler {
         } else if (activeState.equals("node") && qName.equals("tag") && attributes.getValue("k")
                 .equals("name")) {
             /* While looking at a node, we found a <tag...> with k="name". */
-
+            String name = attributes.getValue("v");
+            String cleanName = GraphDB.cleanString(name);
+            g.addCleanNameToTire(cleanName, name);
+            GraphDB.NameNode nameNode = new GraphDB.NameNode(curNode.id, curNode.lon, curNode.lat, name);
+            g.addNameNode(nameNode);
+            g.addLocation(name, curNode.id);
+            g.addLocation(cleanName, curNode.id);
             /* Hint: Since we found this <tag...> INSIDE a node, we should probably remember which
             node this tag belongs to. Remember XML is parsed top-to-bottom, so probably it's the
             last node that you looked at (check the first if-case). */

@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +24,59 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        long startNode = g.closest(stlon, stlat);
+        long targetNode = g.closest(destlon, destlat);
+        Set<Long> isVisited = new HashSet<>();
+        Map<Long, Long> edgeTo = new HashMap<>();
+
+        PriorityQueue<Long> pq = new PriorityQueue<>(g.getComparator());
+        for (long node : g.vertices()) {
+            g.changeDistTo(node, Double.POSITIVE_INFINITY);
+        }
+        g.changeDistTo(startNode, 0);
+        pq.add(startNode);
+
+        while (!pq.isEmpty()) {
+            long curNode = pq.poll();
+            if (isVisited.contains(curNode)) {
+                continue;
+            }
+            if (curNode == targetNode) {
+                break;
+            }
+            isVisited.add(curNode);
+            for (long v : g.adjacent(curNode)) {
+                relax(g, edgeTo, pq, curNode, v, targetNode);
+            }
+        }
+
+        List<Long> res = new LinkedList<>();
+        res.add(targetNode);
+        while (targetNode != startNode) {
+            if (edgeTo.get(targetNode) == null) {
+                return new LinkedList<>();
+            }
+            res.add(0, edgeTo.get(targetNode));
+            targetNode = edgeTo.get(targetNode);
+        }
+
+        for (long node : g.vertices()) {
+            g.changePriority(node, 0);
+        }
+
+        return res;
+
+    }
+
+    private static void relax(GraphDB g, Map<Long, Long> edgeTo, PriorityQueue<Long> pq, long curNode, long v, long targetNode) {
+        if (g.getDistTo(curNode) + g.distance(curNode, v) < g.getDistTo(v)) {
+            g.changeDistTo(v, g.getDistTo(curNode) + g.distance(curNode, v));
+
+            g.changePriority(v, g.getDistTo(v) + g.distance(v, targetNode));
+            pq.add(v);
+
+            edgeTo.put(v, curNode);
+        }
     }
 
     /**
@@ -37,7 +88,70 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        List<NavigationDirection> res = new ArrayList<>();
+
+        NavigationDirection cur = new NavigationDirection();
+        cur.direction = NavigationDirection.START;
+        cur.way = getWayName(g, route.get(0), route.get(1));
+        cur.distance += g.distance(route.get(0), route.get(1));
+
+        for (int i = 1, j = 2; j < route.size(); i++, j++) {
+            if (!getWayName(g, route.get(i), route.get(j)).equals(cur.way)) {
+                res.add(cur);
+                cur = new NavigationDirection();
+                cur.way = getWayName(g, route.get(i), route.get(j));
+
+                double prevBearing = g.bearing(route.get(i - 1), route.get(i));
+                double curBearing = g.bearing(route.get(i), route.get(j));
+                cur.direction = convertBearingToDirection(prevBearing, curBearing);
+
+                cur.distance += g.distance(route.get(i), route.get(j));
+                continue;
+            }
+            cur.distance += g.distance(route.get(i), route.get(j));
+        }
+        res.add(cur);
+        return res;
+    }
+
+    private static int convertBearingToDirection(double prevBearing, double curBearing) {
+        double relativeBearing = curBearing - prevBearing;
+        if (relativeBearing > 180) {
+            relativeBearing -= 360;
+        } else if (relativeBearing < -180) {
+            relativeBearing += 360;
+        }
+
+        if (relativeBearing < -100) {
+            return NavigationDirection.SHARP_LEFT;
+        } else if (relativeBearing < -30) {
+            return NavigationDirection.LEFT;
+        } else if (relativeBearing < -15) {
+            return NavigationDirection.SLIGHT_LEFT;
+        } else if (relativeBearing < 15) {
+            return NavigationDirection.STRAIGHT;
+        } else if (relativeBearing < 30) {
+            return NavigationDirection.SLIGHT_RIGHT;
+        } else if (relativeBearing < 100) {
+            return NavigationDirection.RIGHT;
+        } else {
+            return NavigationDirection.SHARP_RIGHT;
+        }
+    }
+
+    private static String getWayName(GraphDB g, long node1, long node2) {
+        String name = "";
+
+        Set<Long> ways1 = new HashSet<>(g.getWaysId(node1));
+        Set<Long> ways2 = new HashSet<>(g.getWaysId(node2));
+
+        ways1.retainAll(ways2);
+
+        if (!ways1.isEmpty()) {
+            name = g.getWaysName(ways1.iterator().next());
+        }
+
+        return name;
     }
 
 
