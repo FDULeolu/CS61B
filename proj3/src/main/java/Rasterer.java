@@ -65,11 +65,11 @@ public class Rasterer {
 
     private void calDepth() {
         //Approximate calculation
-        double LonDPP = calLonDPP();
+        double lonDPP = calLonDPP();
         depth = -1;
         double zerothLonDPP = (MapServer.ROOT_LRLON - MapServer.ROOT_ULLON) / MapServer.TILE_SIZE;
         for (int i = 0; i < 8; i++) {
-            if (zerothLonDPP / Math.pow(2, i) <= LonDPP) {
+            if (zerothLonDPP / Math.pow(2, i) <= lonDPP) {
                 depth = i;
                 break;
             }
@@ -105,7 +105,7 @@ public class Rasterer {
             for (int j = upLeftY; j <= lowRightY; j++) {
                 renderGrid[j - upLeftY][i - upLeftX] = pictureName(i, j);
             }
-         }
+        }
 
         raster.put("raster_ul_lon", MapServer.ROOT_ULLON + upLeftX * lonPerGrid);
         raster.put("raster_ul_lat", MapServer.ROOT_ULLAT - upLeftY * latPerGrid);
