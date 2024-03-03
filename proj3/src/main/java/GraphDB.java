@@ -258,6 +258,10 @@ public class GraphDB {
         return new NodeComparator();
     }
 
+    public List<Long> getWays(long nodeId) {
+        return nodes.get(nodeId).wayIds;
+    }
+
     static class Node {
         long id;
         double lat;
@@ -298,11 +302,7 @@ public class GraphDB {
         }
     }
 
-    public List<Long> getWaysId(long v) {
-        return nodes.get(v).wayIds;
-    }
-
-    public String getWaysName(long w) {
+    public String getWayName(long w) {
         return ways.get(w).name;
     }
 

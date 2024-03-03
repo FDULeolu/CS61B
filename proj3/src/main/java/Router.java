@@ -1,6 +1,7 @@
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This class provides a shortestPath method for finding routes between two points
@@ -140,18 +141,24 @@ public class Router {
     }
 
     private static String getWayName(GraphDB g, long node1, long node2) {
-        String name = "";
+        String noName = "";
 
-        Set<Long> ways1 = new HashSet<>(g.getWaysId(node1));
-        Set<Long> ways2 = new HashSet<>(g.getWaysId(node2));
+        List<Long> ways1 = g.getWays(node1);
+        List<Long> ways2 = g.getWays(node2);
 
-        ways1.retainAll(ways2);
+        // intersection
+        List<Long> intersection =
+                ways1.stream().filter(ways2::contains).collect(Collectors.toList());
 
-        if (!ways1.isEmpty()) {
-            name = g.getWaysName(ways1.iterator().next());
+        if (!intersection.isEmpty()) {
+            if (g.getWayName(intersection.get(0)) == null) {
+                return noName;
+            } else {
+                return g.getWayName(intersection.get(0));
+            }
         }
 
-        return name;
+        return noName;
     }
 
 
